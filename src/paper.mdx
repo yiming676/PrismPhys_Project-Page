@@ -12,7 +12,10 @@ import Bibtex from "./components/Bibtex.astro";
 
 <Header
   title="PrismPhys"
-  subtitle="Competing Constitutive Hypotheses for Cross-Interaction 4D Physical Prediction under Short-Observation Ambiguity"
+  subtitle={[
+    "Competing Constitutive Hypotheses for Cross-Interaction 4D Physical Prediction",
+    "under Short-Observation Ambiguity",
+  ]}
   authors={[
     "Yuanchuan Wang",
     "Junyi Zhang",
@@ -48,15 +51,6 @@ Short monocular videos reveal only a limited range of a deformable object's mate
 To explore heterogeneous material mechanisms, a frozen vision-language model proposes simulator-valid hypotheses from observed and simulated motion, while measured source-action simulation responses guide their evaluation and iterative refinement. Candidates are compared using image, motion, and projected-shape residuals. By selecting the material model from source observations, our framework enables 3D motion prediction under unseen interactions without target-specific calibration.
 
 This ambiguity exposes an evaluation gap: conventional metrics cannot directly assess whether methods distinguish materials with similar observed motion but different responses under new interactions. To evaluate this capability, we introduce **AmbiPhys-Bench**, a controlled cross-interaction benchmark, together with **cross-interaction future discrimination accuracy (CFDA)**. CFDA tests whether each predicted future is closer to its own material's response than its counterpart's. Experiments show improved cross-interaction prediction and material discrimination over competing methods, while real-world videos support unseen-future 3D motion prediction.
-
-<dl class="benchmark-grid" aria-label="AmbiPhys-Bench at a glance">
-  <div><dt>Objects</dt><dd>12</dd></div>
-  <div><dt>Materials</dt><dd>6</dd></div>
-  <div><dt>Interactions</dt><dd>6</dd></div>
-  <div><dt>Source tasks</dt><dd>360</dd></div>
-  <div><dt>Target tasks</dt><dd>1,800</dd></div>
-  <div><dt>CFDA pairs</dt><dd>362</dd></div>
-</dl>
 
 </section>
 

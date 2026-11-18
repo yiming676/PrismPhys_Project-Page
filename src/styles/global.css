@@ -217,12 +217,15 @@ html[data-theme="dark"] .theme-icon-moon {
 
 .paper-subtitle {
   display: block;
-  max-width: 62ch;
+  max-width: 100%;
   margin: 1.25rem auto 0;
   font-size: clamp(1.35rem, 2.6vw, 1.85rem);
   font-weight: 400;
   line-height: 1.28;
-  text-wrap: balance;
+}
+
+.paper-subtitle > span {
+  display: block;
 }
 
 .author-block {
@@ -336,45 +339,19 @@ main {
 
 .paper-figure > a {
   display: block;
-  width: 70%;
-  max-width: 49rem;
+  width: 77%;
+  max-width: 53.9rem;
   margin: 0 auto;
 }
 
 .paper-figure figcaption {
-  max-width: 64rem;
+  width: 77%;
+  max-width: 53.9rem;
   margin: 12px auto 0;
-  padding: 0 4px;
+  padding: 0;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.55;
-}
-
-.benchmark-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px 12px;
-  margin: 2rem 0 0;
-  padding: 1.5rem 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-
-.benchmark-grid div {
-  min-width: 0;
-}
-
-.benchmark-grid dt {
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.benchmark-grid dd {
-  margin: 2px 0 0;
-  font-size: 1.75rem;
-  font-variant-numeric: tabular-nums;
-  font-weight: 620;
-  line-height: 1.2;
 }
 
 .demo-gallery {
@@ -635,10 +612,12 @@ thead th {
 }
 
 .metric-unit {
-  display: block;
+  display: inline;
+  margin-left: 4px;
   color: var(--muted);
   font-size: 11px;
   font-weight: 400;
+  white-space: nowrap;
 }
 
 .table-group td {
@@ -708,12 +687,6 @@ thead th {
   font-size: 14px;
 }
 
-@media (min-width: 760px) {
-  .benchmark-grid {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 640px) {
   body {
     font-size: 16px;
@@ -754,6 +727,10 @@ thead th {
   }
 
   .paper-figure > a {
+    width: 100%;
+  }
+
+  .paper-figure figcaption {
     width: 100%;
   }
 }

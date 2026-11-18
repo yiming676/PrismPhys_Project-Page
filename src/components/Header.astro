@@ -5,7 +5,7 @@ type Link = { name: string; url: string };
 
 interface Props {
   title: string;
-  subtitle: string;
+  subtitle: string[];
   authors: string[];
   affiliation: string;
   links: Link[];
@@ -17,7 +17,9 @@ const { title, subtitle, authors, affiliation, links } = Astro.props;
 <header class="paper-header">
   <h1>
     <span class="paper-title">{title}</span>
-    <span class="paper-subtitle">{subtitle}</span>
+    <span class="paper-subtitle">
+      {subtitle.map((line) => <span>{line}</span>)}
+    </span>
   </h1>
   <div class="author-block">
     <p class="authors">
