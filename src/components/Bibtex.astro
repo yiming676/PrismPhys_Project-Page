@@ -1,0 +1,16 @@
+---
+import { withBase } from "../lib/paths";
+
+interface Props {
+  code: string;
+}
+
+const { code } = Astro.props;
+---
+
+<div class="bibtex-block">
+  <button class="copy-button" type="button" data-copy-bibtex>Copy BibTeX</button>
+  <pre><code id="bibtex-code">{code}</code></pre>
+</div>
+
+<script type="module" src={withBase("scripts/bibtex.js")}></script>

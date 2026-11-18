@@ -1,0 +1,168 @@
+---
+title: "PrismPhys: Cross-Interaction 4D Physical Prediction"
+description: "PrismPhys searches competing constitutive hypotheses to predict 3D motion under unseen interactions from short monocular observations."
+favicon: favicon.svg
+thumbnail: images/teaser-1600.webp
+---
+
+import Header from "./components/Header.astro";
+import Figure from "./components/Figure.astro";
+import DemoGallery from "./components/DemoGallery.astro";
+import Bibtex from "./components/Bibtex.astro";
+
+<Header
+  title="PrismPhys"
+  subtitle="Competing Constitutive Hypotheses for Cross-Interaction 4D Physical Prediction under Short-Observation Ambiguity"
+  authors={[
+    "Yuanchuan Wang",
+    "Junyi Zhang",
+    "Shizhuo Cheng",
+    "Qichao Wang",
+    "Wenzhe Qian",
+    "Min Zhang",
+  ]}
+  affiliation="Zhejiang University"
+  links={[
+    { name: "Paper PDF", url: "paper/PrismPhys.pdf" },
+    { name: "Demo videos", url: "#demo" },
+    { name: "BibTeX", url: "#bibtex" },
+  ]}
+/>
+
+<Figure
+  name="teaser"
+  width={9257}
+  height={4679}
+  alt="Similar push and drop observations lead to different shear and compression futures for rubber, plasticine, foam, and metal; PrismPhys contours follow GT more closely than the compared methods."
+  eager
+>
+  <strong>Similar observations, divergent futures.</strong> Identical geometry and appearance can conceal different materials. Although their observed motions are similar, their responses to unseen interactions diverge. PrismPhys more closely follows GT than the strongest baseline in each case.
+</Figure>
+
+<section id="abstract" class="paper-section">
+
+<h2 id="abstract-heading">Abstract</h2>
+
+Short monocular videos reveal only a limited range of a deformable object's material responses. Different constitutive models can therefore match the observed motion yet predict divergent behavior under new interactions. We propose **PrismPhys**, a vision-language-guided physics-search framework that treats constitutive families as competing hypotheses and jointly searches their continuous parameters.
+
+To explore heterogeneous material mechanisms, a frozen vision-language model proposes simulator-valid hypotheses from observed and simulated motion, while measured source-action simulation responses guide their evaluation and iterative refinement. Candidates are compared using image, motion, and projected-shape residuals. By selecting the material model from source observations, our framework enables 3D motion prediction under unseen interactions without target-specific calibration.
+
+This ambiguity exposes an evaluation gap: conventional metrics cannot directly assess whether methods distinguish materials with similar observed motion but different responses under new interactions. To evaluate this capability, we introduce **AmbiPhys-Bench**, a controlled cross-interaction benchmark, together with **cross-interaction future discrimination accuracy (CFDA)**. CFDA tests whether each predicted future is closer to its own material's response than its counterpart's. Experiments show improved cross-interaction prediction and material discrimination over competing methods, while real-world videos support unseen-future 3D motion prediction.
+
+<dl class="benchmark-grid" aria-label="AmbiPhys-Bench at a glance">
+  <div><dt>Objects</dt><dd>12</dd></div>
+  <div><dt>Materials</dt><dd>6</dd></div>
+  <div><dt>Interactions</dt><dd>6</dd></div>
+  <div><dt>Source tasks</dt><dd>360</dd></div>
+  <div><dt>Target tasks</dt><dd>1,800</dd></div>
+  <div><dt>CFDA pairs</dt><dd>362</dd></div>
+</dl>
+
+</section>
+
+<section id="method" class="paper-section">
+
+<h2 id="method-heading">Method</h2>
+
+<Figure
+  name="method_overview"
+  width={11145}
+  height={5501}
+  alt="PrismPhys pipeline: 3D initialization from the observed video, two constitutive hypotheses evaluated through MPM, five observation residuals, vision-language and measured-response refinement, and frozen prediction under new interactions."
+/>
+
+</section>
+
+<section id="demo" class="paper-section paper-section-wide">
+
+<h2 id="demo-heading">Demo</h2>
+
+<DemoGallery />
+
+</section>
+
+<section id="results" class="paper-section">
+
+<h2 id="results-heading">Main Results</h2>
+
+<details class="additional-results" open>
+  <summary>Cross-interaction prediction on AmbiPhys-Bench</summary>
+<table>
+  <thead>
+    <tr><th>Method</th><th>mCD ↓<span class="metric-unit">10⁻³ m²</span></th><th>ADE ↓<span class="metric-unit">mm</span></th><th>PSNR ↑<span class="metric-unit">dB</span></th><th>SSIM ↑</th><th>LPIPS ↓</th><th>IoU ↑</th><th>Time ↓<span class="metric-unit">s</span></th><th>CFDA ↑<span class="metric-unit">%</span></th></tr>
+  </thead>
+  <tbody>
+    <tr className="table-group"><td colSpan={9}>Same-interaction future · frames 50–80</td></tr>
+    <tr><td>PhysTwin</td><td><u>4.817</u></td><td><u>39.33</u></td><td><u>15.86</u></td><td><u>0.6833</u></td><td><strong>0.2288</strong></td><td><u>0.8128</u></td><td>2419.7</td><td>—</td></tr>
+    <tr><td>MatPhys</td><td>5.794</td><td>46.81</td><td>14.56</td><td>0.6579</td><td><u>0.2666</u></td><td>0.7807</td><td>1012.8</td><td>—</td></tr>
+    <tr><td>ReconPhys</td><td>6.527</td><td>54.02</td><td>13.13</td><td>0.6204</td><td>0.3024</td><td>0.7609</td><td><strong>89.7</strong></td><td>—</td></tr>
+    <tr className="our-row"><td>PrismPhys</td><td><strong>3.633</strong></td><td><strong>38.99</strong></td><td><strong>15.87</strong></td><td><strong>0.6834</strong></td><td><strong>0.2288</strong></td><td><strong>0.8227</strong></td><td><u>632.0</u></td><td>—</td></tr>
+    <tr className="table-group"><td colSpan={9}>Cross-interaction future · frames 1–80</td></tr>
+    <tr><td>PhysTwin</td><td><u>2.604</u></td><td><u>28.36</u></td><td><u>18.83</u></td><td><u>0.7473</u></td><td><u>0.1819</u></td><td><u>0.8481</u></td><td>2420.2</td><td><u>14.59</u></td></tr>
+    <tr><td>MatPhys</td><td>2.815</td><td>28.47</td><td>18.37</td><td>0.7435</td><td>0.1829</td><td>0.8475</td><td>1017.5</td><td>8.20</td></tr>
+    <tr><td>ReconPhys</td><td>2.902</td><td>30.69</td><td>17.82</td><td>0.7273</td><td>0.1936</td><td>0.8443</td><td><strong>83.5</strong></td><td>0.00</td></tr>
+    <tr className="our-row"><td>PrismPhys</td><td><strong>2.555</strong></td><td><strong>27.52</strong></td><td><strong>19.83</strong></td><td><strong>0.7662</strong></td><td><strong>0.1681</strong></td><td><strong>0.8642</strong></td><td><u>676.9</u></td><td><strong>23.92</strong></td></tr>
+  </tbody>
+</table>
+</details>
+
+<details class="additional-results">
+  <summary>Drop-source comparison with MonoPhysics</summary>
+  <table>
+    <thead><tr><th>Method</th><th>mCD ↓<span class="metric-unit">10⁻³ m²</span></th><th>ADE ↓<span class="metric-unit">mm</span></th><th>PSNR ↑<span class="metric-unit">dB</span></th><th>SSIM ↑</th><th>LPIPS ↓</th><th>IoU ↑</th><th>Time ↓<span class="metric-unit">h</span></th></tr></thead>
+    <tbody>
+      <tr className="table-group"><td colSpan={8}>Same-interaction future · frames 50–80</td></tr>
+      <tr><td>MonoPhysics</td><td>11.124</td><td><strong>79.25</strong></td><td><strong>11.31</strong></td><td><strong>0.5316</strong></td><td><strong>0.4368</strong></td><td><strong>0.6511</strong></td><td>4.08</td></tr>
+      <tr className="our-row"><td>PrismPhys</td><td><strong>5.495</strong></td><td>82.65</td><td>10.27</td><td>0.5233</td><td>0.4613</td><td>0.6419</td><td><strong>0.17</strong></td></tr>
+      <tr className="table-group"><td colSpan={8}>Cross-interaction future · frames 1–80</td></tr>
+      <tr><td>MonoPhysics</td><td>3.724</td><td>29.29</td><td>19.35</td><td>0.7587</td><td>0.1664</td><td>0.8662</td><td>4.09</td></tr>
+      <tr className="our-row"><td>PrismPhys</td><td><strong>1.390</strong></td><td><strong>19.99</strong></td><td><strong>20.25</strong></td><td><strong>0.7794</strong></td><td><strong>0.1430</strong></td><td><strong>0.8921</strong></td><td><strong>0.18</strong></td></tr>
+    </tbody>
+  </table>
+</details>
+
+<details class="additional-results">
+  <summary>Real-world future prediction on PhysTwin</summary>
+<table>
+  <thead><tr><th>Method</th><th>CD ↓<span class="metric-unit">mm</span></th><th>Track ↓<span class="metric-unit">mm</span></th><th>PSNR ↑<span class="metric-unit">dB</span></th><th>SSIM ↑</th><th>LPIPS ↓</th><th>IoU ↑</th><th>Time ↓<span class="metric-unit">h</span></th></tr></thead>
+  <tbody>
+    <tr><td>PhysTwin</td><td><u>13.919</u></td><td><strong>24.79</strong></td><td>26.13</td><td><u>0.951</u></td><td><u>0.059</u></td><td><u>0.685</u></td><td>4.75</td></tr>
+    <tr><td>MatPhys</td><td>16.697</td><td>27.98</td><td><u>26.16</u></td><td><u>0.951</u></td><td>0.062</td><td>0.654</td><td>1.45</td></tr>
+    <tr><td>ReconPhys</td><td>40.171</td><td>51.95</td><td>23.35</td><td>0.932</td><td>0.087</td><td>0.540</td><td><strong>0.01</strong></td></tr>
+    <tr className="our-row"><td>PrismPhys</td><td><strong>13.396</strong></td><td><u>24.98</u></td><td><strong>26.53</strong></td><td><strong>0.952</strong></td><td><strong>0.057</strong></td><td><strong>0.697</strong></td><td><u>0.17</u></td></tr>
+  </tbody>
+</table>
+</details>
+
+<details class="additional-results">
+  <summary>Ablation studies</summary>
+<table>
+  <thead><tr><th>Variant</th><th>Source ↓</th><th>Cross ADE ↓<span class="metric-unit">mm</span></th><th>CFDA ↑<span class="metric-unit">%</span></th></tr></thead>
+  <tbody>
+    <tr className="table-group"><td colSpan={4}>Controlled substitutions</td></tr>
+    <tr><td>No VLM images</td><td>25.41</td><td>28.07</td><td>20.59</td></tr>
+    <tr><td>Rule feedback</td><td>25.81</td><td>28.18</td><td>18.24</td></tr>
+    <tr><td>Fixed stiffness grid</td><td>25.21</td><td>28.33</td><td>21.94</td></tr>
+    <tr className="our-row"><td>Full method</td><td><strong>24.58</strong></td><td><strong>27.52</strong></td><td><strong>23.92</strong></td></tr>
+    <tr className="table-group"><td colSpan={4}>Matched-attempt family search</td></tr>
+    <tr><td>Single-family search</td><td>27.62</td><td>28.94</td><td>16.11</td></tr>
+    <tr className="our-row"><td>Full method</td><td><strong>25.40</strong></td><td><strong>27.79</strong></td><td><strong>20.40</strong></td></tr>
+  </tbody>
+</table>
+</details>
+
+</section>
+
+<section id="bibtex" class="paper-section">
+
+<h2 id="bibtex-heading">BibTeX</h2>
+
+export const citation = `@misc{prismphys2027,
+  title   = {PrismPhys: Competing Constitutive Hypotheses for Cross-Interaction 4D Physical Prediction under Short-Observation Ambiguity},
+  author  = {Yuanchuan Wang and Junyi Zhang and Shizhuo Cheng and Qichao Wang and Wenzhe Qian and Min Zhang},
+  year    = {2027}
+}`;
+
+<Bibtex code={citation} />
+
+</section>

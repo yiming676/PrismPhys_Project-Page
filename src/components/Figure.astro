@@ -1,0 +1,31 @@
+---
+import { withBase } from "../lib/paths";
+
+interface Props {
+  name: string;
+  width: number;
+  height: number;
+  alt: string;
+  eager?: boolean;
+}
+
+const { name, width, height, alt, eager = false } = Astro.props;
+const image = (size: number) => withBase(`images/${name}-${size}.webp`);
+---
+
+<figure class="paper-figure">
+  <a href={image(2400)} aria-label={`Open full-resolution figure: ${alt}`}>
+    <img
+      src={image(1600)}
+      srcset={`${image(960)} 960w, ${image(1600)} 1600w, ${image(2400)} 2400w`}
+      sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1160px) 68vw, 784px"
+      width={width}
+      height={height}
+      alt={alt}
+      loading={eager ? "eager" : "lazy"}
+      fetchpriority={eager ? "high" : "auto"}
+      decoding="async"
+    />
+  </a>
+  <figcaption><slot /></figcaption>
+</figure>

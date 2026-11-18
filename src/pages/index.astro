@@ -1,0 +1,75 @@
+---
+import "../styles/global.css";
+import Table from "../components/Table.astro";
+import { withBase } from "../lib/paths";
+import { Content, frontmatter } from "../paper.mdx";
+
+interface Frontmatter {
+  title: string;
+  description: string;
+  favicon: string;
+  thumbnail: string;
+}
+
+const { title, description, favicon, thumbnail } = frontmatter as Frontmatter;
+const socialImage = new URL(withBase(thumbnail), Astro.site ?? Astro.url).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta id="theme-color" name="theme-color" content="#ffffff" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="generator" content={Astro.generator} />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
+    />
+    <link rel="icon" type="image/svg+xml" href={withBase(favicon)} />
+    <script is:inline src={withBase("scripts/theme.js")}></script>
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={socialImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <nav class="site-nav" aria-label="Section navigation">
+      <div class="nav-inner">
+        <a class="nav-brand" href={withBase("")} aria-label="PrismPhys home">PrismPhys</a>
+        <div class="nav-links">
+          <a href="#abstract">Abstract</a>
+          <a href="#method">Method</a>
+          <a href="#demo">Demo</a>
+          <a href="#results">Results</a>
+          <a href="#bibtex">BibTeX</a>
+        </div>
+        <button
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button"
+          aria-label="Switch to dark mode"
+          aria-pressed="false"
+          title="Switch to dark mode"
+        >
+          <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.5 14.1A8.5 8.5 0 0 1 9.9 3.5 8.5 8.5 0 1 0 20.5 14.1Z" />
+          </svg>
+          <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41" />
+          </svg>
+        </button>
+      </div>
+    </nav>
+    <main id="main-content">
+      <Content components={{ table: Table }} />
+    </main>
+  </body>
+</html>

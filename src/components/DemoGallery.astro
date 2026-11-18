@@ -1,0 +1,79 @@
+---
+import demos from "../data/demos.json";
+import { withBase } from "../lib/paths";
+
+const first = demos[0];
+---
+
+<div class="demo-gallery" id="demo-gallery">
+  <div class="demo-tabs" role="tablist" aria-label="Comparison videos">
+    {
+      demos.map((demo, index) => (
+        <button
+          class="demo-tab"
+          id={`demo-tab-${demo.id}`}
+          type="button"
+          role="tab"
+          aria-selected={index === 0 ? "true" : "false"}
+          aria-controls="demo-panel"
+          tabindex={index === 0 ? 0 : -1}
+          data-demo-tab
+          data-video={withBase(demo.video)}
+          data-poster={withBase(demo.poster)}
+          data-title={`${demo.title} · ${demo.interaction}`}
+          data-description={demo.description}
+          data-meta={`${demo.dataset} · ${demo.family}`}
+        >
+          <span class="demo-tab-title">{demo.title}</span>
+          <span class="demo-tab-detail">{demo.interaction}</span>
+        </button>
+      ))
+    }
+  </div>
+  <div
+    class="demo-panel"
+    id="demo-panel"
+    role="tabpanel"
+    aria-labelledby={`demo-tab-${first.id}`}
+  >
+    <video
+      id="demo-video"
+      src={withBase(first.video)}
+      poster={withBase(first.poster)}
+      controls
+      playsinline
+      preload="metadata"
+      width="1280"
+      height="632"
+      aria-label={`${first.title}, ${first.interaction}: synchronized comparison of GT and four methods`}
+    >
+      <track
+        kind="captions"
+        src={withBase("videos/comparison-captions.vtt")}
+        srclang="en"
+        label="English"
+      />
+      Your browser does not support HTML video.
+    </video>
+    <div class="demo-caption" aria-live="polite">
+      <div>
+        <h3 id="demo-title">{first.title} · {first.interaction}</h3>
+        <p class="demo-meta" id="demo-meta">{first.dataset} · {first.family}</p>
+      </div>
+      <p id="demo-description">{first.description}</p>
+    </div>
+  </div>
+  <noscript>
+    <ul class="demo-fallback">
+      {
+        demos.map((demo) => (
+          <li>
+            <a href={withBase(demo.video)}>{demo.title}: {demo.interaction}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </noscript>
+</div>
+
+<script type="module" src={withBase("scripts/demo-gallery.js")}></script>
