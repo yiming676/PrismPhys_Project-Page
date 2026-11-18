@@ -23,7 +23,7 @@ npm run preview
 ```
 
 - `npm run build`：执行 Astro 类型检查并生成 `dist/`。
-- `npm run check:site`：检查 6 个视频案例、12 张多尺寸论文图片、资源路径、锚点和重复 HTML ID。
+- `npm run check:site`：检查 28 个案例的 40 个视频变体、12 张多尺寸论文图片、资源路径、锚点和重复 HTML ID。
 - `npm run preview`：在 `http://127.0.0.1:4321` 预览构建产物。
 
 若开发机不允许 Astro 写用户级配置目录，可使用：
@@ -43,7 +43,7 @@ npm run assets
 
 也可用环境变量指定工具：`FFMPEG=/path/to/ffmpeg FONT=/path/to/font.ttf npm run assets`。
 
-生成器只读取 `../Assets` 与 `../paper/PrismPhys`，只写入 `public/` 和 `src/data/demos.json`。视频为 1280×632、H.264、faststart；图片为 960/1600/2400px WebP。
+生成器只读取 `../Assets` 与 `../paper/PrismPhys`，只写入 `public/` 和 `src/data/demos.json`。AmbiPhys-Bench 的 12 个案例各提供两个视角，PhysTwin 的 16 个案例均提供双视角对比，共 40 个播放变体。视频为 1280×632、H.264、faststart；图片为 960/1600/2400px WebP。
 
 ## 项目结构
 
@@ -53,15 +53,16 @@ Project_Page/
 │   ├── paper.mdx                 # 论文正文、结果表格和 BibTeX
 │   ├── pages/index.astro         # HTML、SEO、导航和页面入口
 │   ├── components/               # 页眉、图片、视频、表格、BibTeX
-│   ├── data/demos.json           # 6 个视频案例的展示信息
+│   ├── data/demos.json           # 28 个案例、40 个播放变体的展示信息
 │   ├── lib/paths.ts              # GitHub Pages 子路径处理
 │   └── styles/global.css         # 学术主题、响应式与 reduced-motion
 ├── public/
 │   ├── images/                   # 多尺寸论文图片
-│   ├── videos/                   # 6 个对比视频、封面与字幕
+│   ├── videos/                   # 全部对比视频、封面与字幕
 │   ├── scripts/                  # 同源外置交互脚本，兼容严格 CSP
 │   └── paper/PrismPhys.pdf       # 论文 PDF
 ├── scripts/
+│   ├── demo_cases.py             # 两个数据集的案例发现与元数据
 │   ├── prepare_assets.py         # 只读原素材的资源生成器
 │   └── check-site.mjs            # 构建产物检查
 ├── .github/workflows/astro.yml   # GitHub Pages 自动部署
@@ -84,6 +85,6 @@ Project_Page/
 
 ## 验收说明
 
-页面使用语义化 HTML、键盘可操作的视频标签、可见焦点、字幕与文字说明。视频默认不自动播放；无 JavaScript 时提供全部视频直链。CSS 动效只用于控件反馈和视频切换，并支持 `prefers-reduced-motion`。
+页面使用语义化 HTML、键盘可操作的案例标签、可见焦点、字幕与文字说明。数据集分开浏览；案例支持触摸滑动、左右按钮和键盘方向键，AmbiPhys-Bench 可切换视角。视频默认不自动播放，且仅加载当前视频；无 JavaScript 时提供全部视频直链。CSS 动效只用于控件反馈和滚动定位，并支持 `prefers-reduced-motion`。
 
 静态安全策略通过 CSP meta 提供。GitHub Pages 的 HSTS、X-Frame-Options 等响应头由托管平台控制，本地扫描无法验证生产响应头。

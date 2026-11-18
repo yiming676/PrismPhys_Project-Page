@@ -6,13 +6,14 @@ Date: 2026-11-18
 
 - Probed all 736 source MP4 files with `ffprobe`; no unreadable videos or metadata errors.
 - AmbiPhys-Bench: 240 videos; AmbiPhys-Bench-SkyBlue: 240; PhysTwin: 256.
-- Generated six independent comparison videos and 12 multi-size paper images. Source files were not edited.
+- Generated 40 comparison-video variants across 28 cases and 12 multi-size paper images. Source files were not edited.
+- AmbiPhys-Bench contributes 12 cases with two selectable views each; PhysTwin contributes 16 dual-view cases.
 
 ## Build and static checks
 
 - `npm run build`: passed; Astro reported 0 errors, 0 warnings, and 0 hints.
-- `npm run check:site`: passed for `/` and `/PrismPhys/`.
-- Checked six demos, 12 paper images, local assets, anchors, and duplicate HTML IDs.
+- `npm run check:site`: passed for `/` and `/PrismPhys_Project-Page/`.
+- Checked 40 video variants, 12 paper images, local assets, anchors, and duplicate HTML IDs.
 
 ## Browser checks
 
@@ -21,14 +22,16 @@ Playwright Chromium was installed only in a temporary directory, not in project 
 | Check | Result |
 | --- | --- |
 | 1440×1000, 768×1024, 390×844, 320×740 | No page overflow, broken images, or duplicate IDs |
-| Six demo tabs | All videos loaded and played; 1280×632, H.264 |
+| 40 video variants | Every video loaded and played; 1280×632, H.264 |
+| Dataset separation | 12 AmbiPhys-Bench cases and 16 PhysTwin cases; independent selection memory |
 | AmbiPhys videos | 3.24 seconds each |
-| PhysTwin videos | 2.70 seconds each |
-| Keyboard | End, ArrowLeft, and Home changed the selected demo correctly |
+| PhysTwin videos | 1.67–2.70 seconds each |
+| Case selection | Touch/native horizontal scrolling, previous/next buttons, boundaries, and view memory passed |
+| Keyboard | End, ArrowLeft, Home, and previous/next controls changed the selected case correctly |
 | BibTeX | Clipboard button reported `Copied` |
 | Reduced motion | Smooth scrolling and video transitions disabled |
-| JavaScript disabled | All sections and six direct video links remained available |
-| `/PrismPhys/` production simulation | Video switching worked; HTTP 200; no console errors |
+| JavaScript disabled | All sections and 40 direct video links remained available |
+| Console and resource responses | No browser errors or failed HTTP responses |
 
 The production check also caught and fixed inline scripts blocked by CSP. Both interactions now load from same-origin external scripts.
 
@@ -39,7 +42,7 @@ Ran the requested read-only scanner against the locally mounted `/PrismPhys/` bu
 - Passed: sensitive files, directory listings, public source maps, restrictive script/CSP rules, CORS, error responses, and debug/API endpoints.
 - The three FAIL results concern `frame-ancestors`, `X-Frame-Options`, and `X-Content-Type-Options`, which require HTTP response headers and cannot be set by a purely static local `python -m http.server`.
 - One WARN identifies the temporary Python server's version header; it is not part of the site or GitHub Pages.
-- Production GitHub Pages headers were not scanned because the site has not been deployed. Recheck the deployed URL before treating these items as resolved.
+- GitHub Pages response headers remain platform-controlled; no new header scan was performed for this revision.
 
 ## Dependency audit
 

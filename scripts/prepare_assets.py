@@ -6,6 +6,8 @@ from pathlib import Path
 
 from PIL import Image
 
+from demo_cases import discover_demos
+
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT.parent / "Assets"
@@ -16,69 +18,7 @@ FONT = os.environ.get(
     "FONT", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 )
 METHODS = ("GT", "PrismPhys", "PhysTwin", "MatPhys", "ReconPhys")
-
-DEMOS = [
-    {
-        "id": "plasticine-drop-push",
-        "title": "Plasticine",
-        "dataset": "AmbiPhys-Bench",
-        "interaction": "Drop → Push",
-        "family": "Hencky elastoplasticity",
-        "description": "A drop-observed tennis ball is pushed in the target rollout. Compare the flattened Hencky response against GT.",
-        "kind": "ambi",
-        "path": "page02/right__omni_ball_031_plasticine__drop_to_push",
-    },
-    {
-        "id": "metal-lift-drop",
-        "title": "Metal-like bear",
-        "dataset": "AmbiPhys-Bench",
-        "interaction": "Lift → Drop",
-        "family": "Corotational cellular",
-        "description": "The source lift gives way to an unseen drop. Compare the inverted landing pose across methods.",
-        "kind": "ambi",
-        "path": "page03/left__omni_teddy_bear_007_metal__lift_to_drop",
-    },
-    {
-        "id": "sand-push-stretch",
-        "title": "Sand",
-        "dataset": "AmbiPhys-Bench",
-        "interaction": "Push → Stretch",
-        "family": "Granular Drucker–Prager",
-        "description": "A granular ball is stretched after a push observation. Watch the rounded outline and localized late indentation.",
-        "kind": "ambi",
-        "path": "page05/left__omni_ball_022_sand__push_to_stretch",
-    },
-    {
-        "id": "rubber-push-shear",
-        "title": "Rubber",
-        "dataset": "AmbiPhys-Bench",
-        "interaction": "Push → Shear",
-        "family": "Cross-interaction transfer",
-        "description": "The dolphin is sheared after a short push observation. The two rows contrast source continuation with the unseen target.",
-        "kind": "ambi",
-        "path": "page06/left__physassets_154_rubber__push_to_shear",
-    },
-    {
-        "id": "real-dinosaur",
-        "title": "Dinosaur",
-        "dataset": "PhysTwin",
-        "interaction": "Point lift",
-        "family": "Real-world video",
-        "description": "Sky-blue predicted geometry is overlaid on the real recording. Two synchronized views show the point-lifted dinosaur.",
-        "kind": "phystwin",
-        "path": "04_single_lift_dinosor",
-    },
-    {
-        "id": "real-cloth",
-        "title": "Cloth",
-        "dataset": "PhysTwin",
-        "interaction": "Corner lift",
-        "family": "Real-world video",
-        "description": "Predicted cloth contours are overlaid on GT in two views, exposing over- and under-prediction around the lifted corner.",
-        "kind": "phystwin",
-        "path": "08_single_lift_cloth",
-    },
-]
+DEMOS = discover_demos(ASSETS)
 
 
 def run(arguments):
@@ -107,11 +47,12 @@ def demo_rows(demo):
         source = next(case.glob("source_same__*"))
         target = next(case.glob("target_cross__*"))
         return (
-            (source, f"Source: {source.name.split('__')[1]}", "view_00"),
-            (target, f"Target: {target.name.split('__')[1]}", "view_00"),
+            (source, f"Source: {source.name.split('__')[1]}", demo["sourceView"]),
+            (target, f"Target: {target.name.split('__')[1]}", demo["sourceView"]),
         )
     case = ASSETS / "PhysTwin" / "cases" / demo["path"] / "videos"
-    return ((case, "View 1", "view00"), (case, "View 2", "view01"))
+    views = sorted(path for path in case.iterdir() if path.is_dir())
+    return tuple((case, f"View {index + 1}", view.name) for index, view in enumerate(views))
 
 
 def make_demo(demo):
@@ -192,14 +133,18 @@ def make_demo(demo):
             method=6,
         )
     poster_png.unlink()
-    return {
+    metadata = {
         key: value
         for key, value in demo.items()
-        if key not in {"kind", "path"}
-    } | {
-        "video": f"videos/{demo['id']}.mp4",
-        "poster": f"videos/{demo['id']}.webp",
+        if key not in {"kind", "path", "sourceView"}
     }
+    metadata.update(
+        {
+            "video": f"videos/{demo['id']}.mp4",
+            "poster": f"videos/{demo['id']}.webp",
+        }
+    )
+    return metadata
 
 
 def main():

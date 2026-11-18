@@ -382,49 +382,176 @@ main {
   margin: 2rem auto 0;
 }
 
-.demo-tabs {
+.dataset-switch {
   display: flex;
-  overflow-x: auto;
   border: 1px solid var(--border);
-  border-bottom: 0;
-  scrollbar-width: thin;
 }
 
-.demo-tab {
-  flex: 1 0 148px;
-  min-height: 74px;
-  padding: 11px 14px;
+.dataset-button {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 11px 16px;
   border: 0;
   border-right: 1px solid var(--border);
-  border-radius: 0;
   background: var(--surface);
   color: var(--text);
-  text-align: left;
 }
 
-.demo-tab:last-child {
+.dataset-button:last-child {
   border-right: 0;
 }
 
-.demo-tab[aria-selected="true"] {
+.dataset-button[aria-pressed="true"] {
   background: var(--background);
   box-shadow: inset 0 3px 0 var(--accent);
 }
 
-.demo-tab-title,
-.demo-tab-detail {
-  display: block;
-}
-
-.demo-tab-title {
-  font-size: 14px;
-  font-weight: 650;
-}
-
-.demo-tab-detail {
-  margin-top: 2px;
+.dataset-count {
   color: var(--muted);
   font-size: 12px;
+  white-space: nowrap;
+}
+
+.case-navigation {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.case-arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--muted);
+}
+
+.case-arrow svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.case-arrow:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+.case-arrow:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+
+.case-rail {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding: 1px 1px 8px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.case-button {
+  display: flex;
+  flex: 0 0 168px;
+  flex-direction: column;
+  padding: 0 0 9px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  scroll-snap-align: center;
+  text-align: left;
+}
+
+.case-button[hidden] {
+  display: none;
+}
+
+.case-button[aria-selected="true"] {
+  background: var(--background);
+  box-shadow: inset 0 3px 0 var(--accent);
+}
+
+.case-button img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1280 / 632;
+  border-bottom: 1px solid var(--border);
+  background: #fff;
+  object-fit: cover;
+}
+
+.case-button-title {
+  padding: 8px 10px 0;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.case-button-detail {
+  padding: 2px 10px 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.case-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  min-height: 44px;
+  margin: 4px 0 12px;
+}
+
+.case-counter {
+  color: var(--muted);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.view-switch {
+  display: flex;
+  border: 1px solid var(--border);
+}
+
+.view-switch[hidden] {
+  display: none;
+}
+
+.view-switch button {
+  min-height: 44px;
+  padding: 7px 14px;
+  border: 0;
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.view-switch button:last-child {
+  border-right: 0;
+}
+
+.view-switch button[aria-pressed="true"] {
+  background: var(--background);
+  color: var(--accent-dark);
+  box-shadow: inset 0 2px 0 var(--accent);
 }
 
 #demo-video {
@@ -615,6 +742,17 @@ thead th {
     gap: 12px;
   }
 
+  .dataset-button {
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 8px 6px;
+  }
+
+  .case-button {
+    flex-basis: 148px;
+  }
+
   .paper-figure > a {
     width: 100%;
   }
@@ -674,7 +812,10 @@ thead th {
   }
 
   .action-link,
-  .demo-tab,
+  .dataset-button,
+  .case-button,
+  .case-arrow,
+  .view-switch button,
   .copy-button,
   #demo-video {
     transition:

@@ -2,39 +2,129 @@
 import demos from "../data/demos.json";
 import { withBase } from "../lib/paths";
 
-const first = demos[0];
+const caseMap = new Map<
+  string,
+  {
+    caseId: string;
+    dataset: string;
+    title: string;
+    interaction: string;
+    variants: typeof demos;
+  }
+>();
+
+for (const demo of demos) {
+  const key = `${demo.dataset}:${demo.caseId}`;
+  if (!caseMap.has(key)) {
+    caseMap.set(key, {
+      caseId: demo.caseId,
+      dataset: demo.dataset,
+      title: demo.title,
+      interaction: demo.interaction,
+      variants: [],
+    });
+  }
+  caseMap.get(key)!.variants.push(demo);
+}
+
+const cases = Array.from(caseMap.values());
+const datasets = [...new Set(cases.map((item) => item.dataset))];
+const firstCase = cases[0];
+const first = firstCase.variants[0];
+const payload = demos.map((demo) => ({
+  ...demo,
+  video: withBase(demo.video),
+  poster: withBase(demo.poster),
+}));
+const caseCount = (dataset: string) => cases.filter((item) => item.dataset === dataset).length;
 ---
 
-<div class="demo-gallery" id="demo-gallery">
-  <div class="demo-tabs" role="tablist" aria-label="Comparison videos">
+<div class="demo-gallery" id="demo-gallery" data-demos={JSON.stringify(payload)}>
+  <div class="dataset-switch" role="group" aria-label="Choose a dataset">
     {
-      demos.map((demo, index) => (
+      datasets.map((dataset) => (
         <button
-          class="demo-tab"
-          id={`demo-tab-${demo.id}`}
+          class="dataset-button"
           type="button"
-          role="tab"
-          aria-selected={index === 0 ? "true" : "false"}
-          aria-controls="demo-panel"
-          tabindex={index === 0 ? 0 : -1}
-          data-demo-tab
-          data-video={withBase(demo.video)}
-          data-poster={withBase(demo.poster)}
-          data-title={`${demo.title} · ${demo.interaction}`}
-          data-description={demo.description}
-          data-meta={`${demo.dataset} · ${demo.family}`}
+          data-dataset-button={dataset}
+          aria-pressed={dataset === firstCase.dataset ? "true" : "false"}
         >
-          <span class="demo-tab-title">{demo.title}</span>
-          <span class="demo-tab-detail">{demo.interaction}</span>
+          <span>{dataset}</span>
+          <span class="dataset-count">{caseCount(dataset)} cases</span>
         </button>
       ))
     }
   </div>
+
+  <div class="case-navigation">
+    <button class="case-arrow" type="button" data-case-prev aria-label="Previous case" disabled>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+    </button>
+    <div
+      class="case-rail"
+      data-case-rail
+      role="tablist"
+      aria-label={`${firstCase.dataset} cases`}
+    >
+      {
+        cases.map((item) => {
+          const selected = item === firstCase;
+          return (
+            <button
+              class="case-button"
+              id={`case-${item.caseId}`}
+              type="button"
+              role="tab"
+              aria-selected={selected ? "true" : "false"}
+              aria-controls="demo-panel"
+              tabindex={selected ? 0 : -1}
+              data-case-button
+              data-case-key={`${item.dataset}:${item.caseId}`}
+              data-dataset={item.dataset}
+              hidden={!selected && item.dataset !== firstCase.dataset}
+            >
+              <img
+                src={withBase(item.variants[0].poster)}
+                alt=""
+                width="160"
+                height="79"
+                loading={selected ? "eager" : "lazy"}
+                decoding="async"
+              />
+              <span class="case-button-title">{item.title}</span>
+              <span class="case-button-detail">{item.interaction}</span>
+            </button>
+          );
+        })
+      }
+    </div>
+    <button class="case-arrow" type="button" data-case-next aria-label="Next case">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+    </button>
+  </div>
+
+  <div class="case-toolbar">
+    <span class="case-counter" data-case-counter>Case 1 of {caseCount(firstCase.dataset)}</span>
+    <div class="view-switch" data-view-switch role="group" aria-label="Camera view">
+      {
+        firstCase.variants.map((variant, index) => (
+          <button
+            type="button"
+            data-view-button={variant.viewId}
+            aria-pressed={index === 0 ? "true" : "false"}
+          >
+            {variant.view}
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
   <div
     class="demo-panel"
     id="demo-panel"
     role="tabpanel"
-    aria-labelledby={`demo-tab-${first.id}`}
+    aria-labelledby={`case-${firstCase.caseId}`}
   >
     <video
       id="demo-video"
@@ -45,7 +135,7 @@ const first = demos[0];
       preload="metadata"
       width="1280"
       height="632"
-      aria-label={`${first.title}, ${first.interaction}: synchronized comparison of GT and four methods`}
+      aria-label={`${first.title}, ${first.interaction}, ${first.view}: synchronized comparison of GT and four methods`}
     >
       <track
         kind="captions"
@@ -63,16 +153,32 @@ const first = demos[0];
       <p id="demo-description">{first.description}</p>
     </div>
   </div>
+
   <noscript>
-    <ul class="demo-fallback">
+    <div class="demo-fallback">
       {
-        demos.map((demo) => (
-          <li>
-            <a href={withBase(demo.video)}>{demo.title}: {demo.interaction}</a>
-          </li>
+        datasets.map((dataset) => (
+          <section>
+            <h3>{dataset}</h3>
+            <ul>
+              {
+                cases
+                  .filter((item) => item.dataset === dataset)
+                  .map((item) =>
+                    item.variants.map((variant) => (
+                      <li>
+                        <a href={withBase(variant.video)}>
+                          {item.title}: {item.interaction} · {variant.view}
+                        </a>
+                      </li>
+                    ))
+                  )
+              }
+            </ul>
+          </section>
         ))
       }
-    </ul>
+    </div>
   </noscript>
 </div>
 
